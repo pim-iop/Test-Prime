@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prime's Group — Neon Portfolio App</title>
+  <style>
+    :root{
+      --bg-1:#05020a; --card:#0b1220; --glass: rgba(255,255,255,0.02);
+      --accent1: #7c5cff; --accent2: #00e0ff;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.06), transparent), radial-gradient(900px 400px at 90% 90%, rgba(0,224,255,0.04), transparent), var(--bg-1);
+      color:#eaf2ff;
+      -webkit-font-smoothing:antialiased;
+      padding:30px;
+      transition: background .6s ease;
+    }
+
+    .stage{
+      max-width:1260px;
+      margin:0 auto;
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+      box-shadow: 0 30px 80px rgba(3,8,20,0.6);
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      padding:28px;
+    }
+
+    .glow-layer{
+      position:absolute;left:-15%;top:-25%;width:130%;height:150%;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(124,92,255,0.18), rgba(0,224,255,0.12), rgba(255,60,140,0.06));
+      mix-blend-mode:screen; filter:blur(20px); opacity:.7; z-index:0; animation: rotateGlow 20s linear infinite;
+    }
+    @keyframes rotateGlow{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+    .content{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      position:relative;
+      z-index:2;
+      min-height:420px;
+    }
+
+    /* left column */
+    .hero{
+      padding:14px 8px;
+    }
+    .brand{
+      display:flex; gap:18px; align-items:flex-start;
+    }
+    .logo{
+      width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--accent1),var(--accent2)); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:24px; color:#04111a; box-shadow:0 10px 40px rgba(124,92,255,0.14)
+    }
+    h1{font-size:28px; margin-bottom:6px}
+    .lead{opacity:.85; max-width:760px; margin-bottom:12px; line-height:1.45}
+
+    .hero-actions{display:flex; gap:12px; margin-top:12px; align-items:center}
+    .btn{
+      padding:12px 18px; border-radius:12px; border:none; cursor:pointer; font-weight:800; letter-spacing:.4px;
+      transition:transform .14s ease, box-shadow .2s ease, opacity .12s;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#04111a; box-shadow:0 10px 40px rgba(124,92,255,0.12)
+    }
+    .btn.secondary{ background:transparent; border:1px solid rgba(255,255,255,0.06); color: #cfe8ff; box-shadow:none }
+    .btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.04); color:#d6eaff }
+    .btn:active{ transform:scale(.98) }
+
+    /* portfolio grid */
+    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:18px }
+    .card{ padding:16px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border:1px solid rgba(255,255,255,0.03); position:relative; overflow:hidden }
+    .card .title{ font-weight:800; font-size:15px; margin-bottom:6px }
+    .card .desc{ font-size:13px; opacity:.85 }
+    .card .tag{ position:absolute; right:12px; top:12px; font-size:12px; padding:6px 8px; border-radius:8px; background:rgba(255,255,255,0.02) }
+
+    .lower-row{ margin-top:18px; display:flex; gap:12px; align-items:center }
+
+    /* right column - profile */
+    .side{ padding:18px; border-radius:12px; min-height:320px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border:1px solid rgba(255,255,255,0.03) }
+    .profile{ display:flex; gap:12px; align-items:center }
+    .avatar{ width:96px; height:96px; border-radius:18px; background:linear-gradient(135deg,#00e0ff,#7c5cff); display:flex; align-items:center; justify-content:center; font-weight:900; color:#04111a; font-size:26px; box-shadow:0 16px 50px rgba(0,224,255,0.06) }
+    .bio{ font-size:14px; opacity:.95 }
+    .controls{ margin-top:16px; display:flex; flex-direction:column; gap:10px }
+    .pill{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.02) }
+    .cta-wrap{ display:flex; align-items:center; justify-content:center; height:180px }
+    .hype{ width:140px; height:140px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px; position:relative; border:8px solid rgba(124,92,255,0.12); cursor:pointer }
+    .hype:hover{ transform:scale(1.03) }
+
+    /* dots & particles */
+    .dots{ position:absolute; left:0; top:0; right:0; bottom:0; pointer-events:none; z-index:1 }
+    .dot{ position:absolute; border-radius:50%; opacity:.09 }
+
+    /* contact modal */
+    .modal-backdrop{ position:fixed; inset:0; background:rgba(2,6,20,0.6); display:none; align-items:center; justify-content:center; z-index:9999 }
+    .modal{ width:420px; max-width:92%; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; border:1px solid rgba(255,255,255,0.04) }
+    .modal h3{ margin-bottom:8px }
+    .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px }
+    .field input, .field textarea{ padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:#eaf2ff; resize:none }
+    .modal .row{ display:flex; gap:8px }
+
+    /* toast */
+    .toast{ position:fixed; left:50%; transform:translateX(-50%); bottom:28px; padding:10px 16px; border-radius:12px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#04111a; font-weight:700; box-shadow:0 8px 30px rgba(2,6,20,0.6); z-index:99999 }
+
+    /* responsive */
+    @media (max-width:980px){ .content{ grid-template-columns: 1fr; } .side{ order:2 } .hero{ order:1 } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="glow-layer" id="glowLayer"></div>
+
+    <div class="content">
+      <div class="hero">
+        <div class="brand">
+          <div class="logo">PG</div>
+          <div>
+            <h1>Prime's Group — Neon Portfolio</h1>
+            <div class="lead">A lively app for your group with animated flair, glowing buttons, and a mini-portfolio to show off skills and projects. Built to impress.</div>
+
+            <div class="hero-actions">
+              <button class="btn" id="joinBtn">Join the Group</button>
+              <button class="btn secondary" id="downloadCV">Download CV</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" id="portfolio" aria-live="polite">
+          <!-- cards injected by JS -->
+        </div>
+
+        <div class="lower-row">
+          <button class="btn ghost" id="themeCycle">Cycle Theme</button>
+          <div style="opacity:.85; margin-left:6px;">Showcase: animated cards, glowing CTA, live preview.</div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="profile">
+          <div class="avatar">PG</div>
+          <div>
+            <div style="font-weight:900">Prime — Group Lead</div>
+            <div class="bio">Frontend wizard • Animator • Community hype</div>
+            <div style="opacity:.8;font-size:13px;margin-top:6px">Location: Thailand · Available for collab</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="pill">✨ Glow: <strong id="glowOn">ON</strong></div>
+          <div class="pill">🎵 Sound: <label style="margin-left:8px"><input type="checkbox" id="soundToggle" checked></label></div>
+        </div>
+
+        <div class="cta-wrap">
+          <div class="hype" id="bigCTA"><div style="pointer-events:none">HYPE</div></div>
+        </div>
+
+        <div style="display:flex;gap:8px;justify-content:space-between;margin-top:6px">
+          <button class="btn" id="shareBtn" style="background:linear-gradient(90deg,#00c9ff,#7c5cff)">Share</button>
+          <button class="btn ghost" id="contactBtn">Contact</button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- contact modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3>Contact Prime</h3>
+      <div class="field"><label>Name</label><input id="cName" placeholder="Your name"></div>
+      <div class="field"><label>Email</label><input id="cEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Message</label><textarea id="cMsg" rows="4" placeholder="Say hi or request collab..."></textarea></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn secondary" id="contactExternal">Open Contact Page</button>
+        <button class="btn" id="sendContact">Send (mailto)</button>
+        <button class="btn ghost" id="closeModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* -------------------------
+       Sample portfolio data + render
+       ------------------------- */
+    const pieces = [
+      {title:'Neon Landing', desc:'Animated neon landing page with parallax and gradients', tag:'Design'},
+      {title:'Glow Button Kit', desc:'Reusable glowing buttons & microinteractions', tag:'UI'},
+      {title:'Micro Animations', desc:'SVG/JS micro-animations for delight', tag:'Animation'},
+      {title:'Interactive CV', desc:'Printable CV with live preview and download', tag:'Web'},
+    ];
+    const portfolio = document.getElementById('portfolio');
+    pieces.forEach((p,i)=>{
+      const el = document.createElement('div'); el.className='card';
+      el.innerHTML = `<div class="tag">${p.tag}</div><div class="title">${p.title}</div><div class="desc">${p.desc}</div>`;
+      // subtle mouse tilt
+      el.addEventListener('mousemove', e=>{
+        const r = el.getBoundingClientRect();
+        const rx = (e.clientX - (r.left + r.width/2))/18;
+        const ry = (e.clientY - (r.top + r.height/2))/18;
+        el.style.transform = `perspective(700px) rotateX(${ -ry }deg) rotateY(${ rx }deg) translateZ(6px)`;
+      });
+      el.addEventListener('mouseleave', ()=> el.style.transform = '');
+      portfolio.appendChild(el);
+    });
+
+    /* -------------------------
+       decorative dots animation
+       ------------------------- */
+    const dotsEl = document.getElementById('dots');
+    for(let i=0;i<22;i++){
+      const d = document.createElement('div'); d.className='dot';
+      const size = 6 + Math.random()*26;
+      d.style.width = d.style.height = size+'px';
+      d.style.left = (5+Math.random()*90)+'%';
+      d.style.top = (5+Math.random()*85)+'%';
+      d.style.background = ['#7c5cff','#00e0ff','#ff5caa'][Math.floor(Math.random()*3)];
+      d.style.opacity = (0.03 + Math.random()*0.12);
+      dotsEl.appendChild(d);
+      animateDot(d);
+    }
+    function animateDot(el){
+      const dur = 5000 + Math.random()*10000;
+      const y = (5 + Math.random()*30);
+      el.animate([{transform:'translateY(0px)'},{transform:`translateY(${y}px)`},{transform:'translateY(0px)'}],{duration:dur, iterations:Infinity, easing:'ease-in-out'});
+    }
+
+    /* -------------------------
+       theme cycler
+       ------------------------- */
+    const glowLayer = document.getElementById('glowLayer');
+    const themeBtn = document.getElementById('themeCycle');
+    const themePresets = [
+      { glow:'conic-gradient(from 180deg at 50% 50%, rgba(124,92,255,0.18), rgba(0,224,255,0.12), rgba(255,60,140,0.06))' },
+      { glow:'conic-gradient(from 180deg at 50% 50%, rgba(0,224,255,0.18), rgba(124,92,255,0.12), rgba(80,255,180,0.06))' },
+      { glow:'conic-gradient(from 180deg at 50% 50%, rgba(255,90,120,0.18), rgba(255,200,60,0.12), rgba(124,92,255,0.06))' },
+      { glow:'conic-gradient(from 180deg at 50% 50%, rgba(60,140,255,0.18), rgba(120,0,255,0.12), rgba(20,255,220,0.06))' }
+    ];
+    let themeIndex = 0;
+
+    // click sound (small mp3 hosted public)
+    const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3');
+    const soundToggle = document.getElementById('soundToggle');
+
+    function playClick(){
+      try{
+        if(soundToggle.checked){ clickSound.currentTime = 0; clickSound.play(); }
+      }catch(e){}
+    }
+
+    themeBtn.addEventListener('click', ()=>{
+      playClick();
+      themeIndex = (themeIndex + 1) % themePresets.length;
+      glowLayer.style.background = themePresets[themeIndex].glow;
+      showToast('🌈 Theme cycled!');
+    });
+
+    /* -------------------------
+       share, join, download
+       ------------------------- */
+    document.getElementById('joinBtn').addEventListener('click', ()=>{
+      playClick();
+      showToast('✅ You joined (mock) — welcome!');
+    });
+
+    document.getElementById('downloadCV').addEventListener('click', ()=>{
+      playClick();
+      const content = `Name: Prime\nRole: Group Lead\nSkills: Frontend, Animation, Community Hype\n`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content], {type:'text/plain'})); a.download = 'Prime_CV.txt'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', async ()=>{
+      playClick();
+      const url = window.location.href;
+      if(navigator.share){
+        try{ await navigator.share({ title: "Prime's Group", text: "Check this out", url }); showToast('🔗 Shared'); }
+        catch{ copyToClipboard(url); showToast('🔗 Link copied'); }
+      } else { copyToClipboard(url); showToast('🔗 Link copied'); }
+    });
+    function copyToClipboard(t){ navigator.clipboard?.writeText(t).catch(()=>{}); }
+
+    /* -------------------------
+       Contact modal (no 404)
+       ------------------------- */
+    const modal = document.getElementById('modalBackdrop');
+    const contactBtn = document.getElementById('contactBtn');
+    const closeModal = document.getElementById('closeModal');
+    const sendContact = document.getElementById('sendContact');
+    const contactExternal = document.getElementById('contactExternal');
+
+    // Default external contact page (if you want direct external open from modal)
+    const externalContactURL = 'https://prime-portfolio.vercel.app/contact'; // change if needed
+
+    contactBtn.addEventListener('click', ()=>{
+      playClick();
+      openModal();
+    });
+    closeModal.addEventListener('click', ()=>{ playClick(); closeModalFn(); });
+    contactExternal.addEventListener('click', ()=>{ playClick(); window.open(externalContactURL, '_blank'); showToast('🔗 Opening contact page'); });
+
+    function openModal(){
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden','false');
+      // focus first field
+      setTimeout(()=>document.getElementById('cName').focus(),80);
+    }
+    function closeModalFn(){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    // Send via mailto (user's email app) to avoid external 404
+    sendContact.addEventListener('click', ()=>{
+      playClick();
+      const n = encodeURIComponent(document.getElementById('cName').value || 'Friend');
+      const e = encodeURIComponent(document.getElementById('cEmail').value || '');
+      const m = encodeURIComponent(document.getElementById('cMsg').value || 'Hello!');
+      const subject = encodeURIComponent('Contact from Prime Website — ' + (n));
+      const body = encodeURIComponent(`Name: ${n}%0AEmail: ${e}%0A%0AMessage:%0A${m}`);
+      const mailto = `mailto:prime@example.com?subject=${subject}&body=${body}`; // change prime@example.com
+      window.location.href = mailto;
+      showToast('✉️ Opening email client');
+      closeModalFn();
+    });
+
+    // close on backdrop click
+    modal.addEventListener('click', (ev)=>{ if(ev.target === modal) closeModalFn(); });
+
+    /* -------------------------
+       HYPE button - pulse + micro particles
+       ------------------------- */
+    document.getElementById('bigCTA').addEventListener('click', ()=>{
+      playClick();
+      const el = document.getElementById('bigCTA');
+      el.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:420});
+      showToast('HYPE! 🔥');
+    });
+
+    /* -------------------------
+       tiny toast system
+       ------------------------- */
+    function showToast(msg, duration=2000){
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(()=> t.style.opacity = '0.98', 10);
+      setTimeout(()=> t.animate([{opacity:1, transform:'translateY(0)'},{opacity:0, transform:'translateY(-18px)'}], {duration:400, fill:'forwards'}).onfinish = ()=> t.remove(), duration);
+    }
+
+    /* -------------------------
+       small accessibility: H key triggers hype
+       ------------------------- */
+    window.addEventListener('keydown', e=>{ if(e.key === 'h' || e.key === 'H'){ document.getElementById('bigCTA').click(); } });
+
+    // initial tiny entrance animation for cards
+    document.querySelectorAll('.card').forEach((c,i)=>{ c.style.opacity=0; setTimeout(()=>{ c.animate([{opacity:0, transform:'translateY(8px)'},{opacity:1, transform:'translateY(0)'}],{duration:420, fill:'forwards'}) }, 80*i) });
+
+    /* -------------------------
+       small helper: ensure sound checkbox state persists visually
+       ------------------------- */
+    const glowOn = document.getElementById('glowOn');
+    soundToggle.addEventListener('change', ()=>{ playClick(); showToast(soundToggle.checked ? '🔊 Sound ON' : '🔇 Sound OFF') });
+
+    // Optional: change default contact email quickly (client-side)
+    // TODO: If you have a working contact page and want contactBtn to open it directly, set:
+    // contactBtn.removeEventListener('click', openModal); contactBtn.addEventListener('click', ()=> window.open('YOUR_LINK','_blank'));
+
+  </script>
+</body>
+</html>
